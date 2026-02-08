@@ -1,9 +1,9 @@
 
-import React, { useState, useRef, useEffect } from 'react';
-import { AppState, AudioMetadata } from './types';
-import AudioUploader from './components/AudioUploader';
-import WaveformVisualizer from './components/WaveformVisualizer';
-import StatusOverlay from './components/StatusOverlay';
+import React, { useState, useRef, useCallback } from 'react';
+import { AppState, AudioMetadata } from './types.ts';
+import AudioUploader from './components/AudioUploader.tsx';
+import WaveformVisualizer from './components/WaveformVisualizer.tsx';
+import StatusOverlay from './components/StatusOverlay.tsx';
 
 const App: React.FC = () => {
   const [state, setState] = useState<AppState>(AppState.IDLE);
@@ -34,8 +34,10 @@ const App: React.FC = () => {
   const handlePlay = async () => {
     if (audioRef.current) {
       try {
-        await audioRef.current.play();
-        setState(AppState.PLAYING);
+        if (audioRef.current.paused) {
+          await audioRef.current.play();
+          setState(AppState.PLAYING);
+        }
       } catch (err) {
         console.error("Playback failed:", err);
       }
@@ -68,6 +70,13 @@ const App: React.FC = () => {
     }
   };
 
+  // Stable callback prevents WaveformVisualizer effect from re-running on every App render
+  const handleVisualizerReady = useCallback(() => {
+    if (metadata) {
+      setState(AppState.READY);
+    }
+  }, [metadata]);
+
   const reset = () => {
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     if (audioRef.current) audioRef.current.pause();
@@ -82,13 +91,13 @@ const App: React.FC = () => {
     <div className="relative w-full h-screen overflow-hidden bg-black flex flex-col items-center justify-center">
       {/* Background Ambience */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900/20 blur-[120px] rounded-full"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-900/10 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-green-900/20 blur-[120px] rounded-full"></div>
       </div>
 
       <header className="absolute top-0 left-0 w-full p-8 z-20 flex justify-between items-center pointer-events-none">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-purple-500/20">
+          <div className="w-10 h-10 bg-gradient-to-br from-green-500 to-green-700 rounded-lg flex items-center justify-center shadow-lg shadow-green-500/20">
             <i className="fas fa-wave-square text-white text-xl"></i>
           </div>
           <h1 className="text-xl font-bold tracking-tight text-white/90">AURAWAVE</h1>
@@ -124,7 +133,8 @@ const App: React.FC = () => {
              <WaveformVisualizer 
               audioUrl={audioUrl} 
               isPlaying={state === AppState.PLAYING} 
-              onReady={() => metadata && setState(AppState.READY)}
+              onReady={handleVisualizerReady}
+              audioRef={audioRef}
             />
             
             <StatusOverlay 
@@ -146,6 +156,7 @@ const App: React.FC = () => {
 
       {audioUrl && (
         <audio 
+          key={audioUrl} 
           ref={audioRef} 
           src={audioUrl} 
           onEnded={() => setState(AppState.READY)}

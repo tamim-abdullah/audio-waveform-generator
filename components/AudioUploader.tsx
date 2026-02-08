@@ -1,5 +1,5 @@
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 
 interface AudioUploaderProps {
   onUpload: (file: File) => void;
@@ -22,7 +22,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onUpload, isUploading }) 
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files[0];
-    if (file && file.type === 'audio/mpeg') {
+    if (file && (file.type === 'audio/mpeg' || file.type === 'audio/mp3')) {
       onUpload(file);
     } else {
       alert("Please upload an MP3 file.");
@@ -47,17 +47,17 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onUpload, isUploading }) 
     >
       <div className={`
         relative overflow-hidden group w-full aspect-[16/10] glass rounded-[22px] flex flex-col items-center justify-center gap-6 cursor-pointer border-2 border-dashed transition-all duration-300
-        ${isDragging ? 'border-purple-500/50 bg-purple-500/5' : 'border-white/10 hover:border-white/20'}
+        ${isDragging ? 'border-green-500/50 bg-green-500/5' : 'border-white/10 hover:border-white/20'}
       `}>
         {isUploading ? (
           <div className="flex flex-col items-center gap-4 animate-pulse">
-            <div className="w-16 h-16 rounded-full border-4 border-t-purple-500 border-white/5 animate-spin"></div>
+            <div className="w-16 h-16 rounded-full border-4 border-t-green-500 border-white/5 animate-spin"></div>
             <p className="text-sm font-medium text-white/60 tracking-widest uppercase">Uploading</p>
           </div>
         ) : (
           <>
             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-              <i className={`fas fa-cloud-upload-alt text-3xl transition-colors duration-300 ${isDragging ? 'text-purple-400' : 'text-white/40 group-hover:text-white/80'}`}></i>
+              <i className={`fas fa-cloud-upload-alt text-3xl transition-colors duration-300 ${isDragging ? 'text-green-400' : 'text-white/40 group-hover:text-white/80'}`}></i>
             </div>
             <div className="text-center">
               <h3 className="text-xl font-semibold text-white mb-2">
@@ -67,7 +67,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({ onUpload, isUploading }) 
             </div>
             <input 
               type="file" 
-              accept="audio/mpeg" 
+              accept="audio/mpeg,audio/mp3" 
               className="absolute inset-0 opacity-0 cursor-pointer" 
               onChange={handleFileInput}
             />

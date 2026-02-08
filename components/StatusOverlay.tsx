@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { AppState, AudioMetadata } from '../types';
+import { AppState, AudioMetadata } from '../types.ts';
 
 interface StatusOverlayProps {
   state: AppState;
@@ -23,9 +23,9 @@ const StatusOverlay: React.FC<StatusOverlayProps> = ({ state, metadata, onPlay, 
     return (
       <div className="flex flex-col items-center gap-6 animate-in zoom-in duration-500">
         <div className="relative">
-          <div className="w-20 h-20 rounded-full border-4 border-purple-500/20 flex items-center justify-center">
-             <div className="w-full h-full rounded-full border-t-4 border-purple-500 animate-spin absolute top-0 left-0"></div>
-             <i className="fas fa-search text-purple-400 animate-pulse"></i>
+          <div className="w-20 h-20 rounded-full border-4 border-green-500/20 flex items-center justify-center">
+             <div className="w-full h-full rounded-full border-t-4 border-green-500 animate-spin absolute top-0 left-0"></div>
+             <i className="fas fa-search text-green-400 animate-pulse"></i>
           </div>
         </div>
         <div className="text-center">
@@ -39,7 +39,7 @@ const StatusOverlay: React.FC<StatusOverlayProps> = ({ state, metadata, onPlay, 
   if (state === AppState.READY || state === AppState.PLAYING) {
     return (
       <div className="w-full flex flex-col items-center gap-10 animate-in fade-in slide-in-from-bottom-6 duration-700">
-        {/* Success Tick (Only shows once when ready) */}
+        {/* Success Tick */}
         {state === AppState.READY && currentTime === 0 && (
            <div className="flex items-center gap-3 py-2 px-4 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-bold tracking-widest uppercase mb-4 animate-in fade-in slide-in-from-top-4 duration-1000">
              <i className="fas fa-check-circle"></i>
@@ -63,7 +63,7 @@ const StatusOverlay: React.FC<StatusOverlayProps> = ({ state, metadata, onPlay, 
               w-24 h-24 rounded-full flex items-center justify-center text-3xl transition-all duration-500 shadow-xl
               ${state === AppState.PLAYING 
                 ? 'bg-white text-black scale-110 shadow-white/10' 
-                : 'bg-gradient-to-br from-purple-500 to-blue-600 text-white shadow-purple-500/30 hover:scale-105'}
+                : 'bg-gradient-to-br from-green-500 to-green-700 text-white shadow-green-500/30 hover:scale-105'}
             `}
           >
             <i className={`fas ${state === AppState.PLAYING ? 'fa-pause' : 'fa-play ml-1'}`}></i>
@@ -81,7 +81,7 @@ const StatusOverlay: React.FC<StatusOverlayProps> = ({ state, metadata, onPlay, 
                 onChange={(e) => onSeek(parseFloat(e.target.value))}
                 className="absolute inset-0 w-full h-1 bg-white/10 rounded-full appearance-none cursor-pointer outline-none transition-all group-hover:h-2"
                 style={{
-                  background: `linear-gradient(to right, #a855f7 ${((currentTime / (duration || 1)) * 100)}%, rgba(255,255,255,0.1) ${((currentTime / (duration || 1)) * 100)}%)`
+                  background: `linear-gradient(to right, #22c55e ${((currentTime / (duration || 1)) * 100)}%, rgba(255,255,255,0.1) ${((currentTime / (duration || 1)) * 100)}%)`
                 }}
               />
               <style>{`
