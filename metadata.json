@@ -1,0 +1,7 @@
+{
+  "name": "AuraWave Audio Visualizer",
+  "description": "A modern, high-fidelity MP3 waveform visualizer that transforms your music into immersive real-time animations.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
